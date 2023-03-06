@@ -1,6 +1,9 @@
 #include <iostream>
+#include "utils/greet.hpp"
+
+using namespace messaging;
 
 int main() {
-    std::cout << "Hello, World!" << std::endl;
+    messaging::greet("Vijay");
     return 0;
 }
