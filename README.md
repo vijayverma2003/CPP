@@ -742,3 +742,128 @@ for(int number: second)
 
 **Comparing Arrays**
 
+We can't compare arrays by their variables, because arrays are compared on basis of their memory address.So, we have to 
+iterate over the array and then compare its values.
+
+
+```c++
+int first[] = {1, 2, 3, 4, 5};
+int second[] = {1, 2, 3, 4, 5};
+
+bool areEqual = true;
+
+for(int i = 0; i < size(first); i++) {
+    if(first[i] != second[i]) {
+        areEqual = false;
+        break;
+    }
+}
+
+cout << boolalpha << areEqual;
+```
+
+**Passing Arrays to Functions**
+
+When we pass an array to a function, the array type is converted to a pointer. In the following example the int array
+will be converted to an int pointer "int*", so, we can't use range based for loop on that instead we have to use a 
+traditional for loop. Also, as int array is converted to int* we always have to pass the size of array to function too.
+
+
+```c++
+#include <iostream>
+
+using namespace std;
+
+void printNumbers(int numbers[], int size) {
+    for(int i = 0; i < size; i++)
+        cout << numbers[i] << endl;
+}
+
+void main() {
+    int numbers[] = {1, 2, 3, 4, 5};
+    printNumbers(numbers, size(numbers));
+    
+    return 0;
+}
+```
+
+**Understand size_t**
+
+**size_t** is one of the function provided in iostream, that is type of return values of size and sizeof.
+size_t is equivalent to unsigned long long type for 64 bit systems, and unsigned int for 32 bit systems.
+
+So, basically, this is a data type for representing the sizes and this type is guaranteed to be large enough to contain
+the size of largest type that system can handle.
+
+```c++
+cout << numeric_limits<size_t>::min() << endl; // 0
+cout << numeric_limits<size_t>::max() << endl; // 18446744073709551615
+```
+
+**Unpacking Arrays**
+
+In C++, it is called **structured binding**.
+In JavaScript, it is called **destructuring**.
+In python it is called **unpacking**.
+
+```c++
+int values[3] = {1, 2, 3};
+
+auto [x, y, z] = values;
+```
+
+**Searching Arrays**
+
+Linear Search Algorithms
+
+```c++
+int linearSearch(int target, int numbers[], size_t size) {
+    for(int i = 0; i < size; i++) {
+        if(target == numbers[i]) return i;
+    }
+
+    return -1;
+}
+```
+
+**Sorting Arrays using Bubble Sort**
+
+```c++
+void swap(int numbers[], int a, int b) {
+    int temp = numbers[a];
+    numbers[a] = numbers[b];
+    numbers[b] = temp;
+}
+
+void bubbleSort(int numbers[], int size) {
+    for(int pass = 0; pass < size; pass++) {
+        for (int i = 1; i < size; i++)
+            if (numbers[i] < numbers[i - 1])
+                swap(numbers, i, i - 1);
+    }
+}
+```
+
+**Multi Dimensional Arrays**
+
+```c++
+const int rows = 2;
+const int columns = 3;
+
+void printMatrix(int numbers[rows][columns]) {
+    for(int i = 0; i < rows; i++)
+        for(int j = 0; j < columns; j++)
+            cout << numbers[i][j] << endl;
+}
+
+int main() {
+    int numbers[rows][columns] = {
+            {11, 12, 13},
+            {21, 22, 23}
+    };
+
+    printMatrix(numbers);
+
+    return 0;
+}
+```
