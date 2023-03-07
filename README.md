@@ -599,7 +599,7 @@ When using overloading functions, we need to remember a concept called **Signatu
 
 If we have same function with same number and types of parameters then we will get an error.
 
-**Passing argumets by value or reference**
+**Passing arguments by value or reference**
 
 In C++, we can pass variables as the arguments as like in every programming language. So when a function is called, the value is copied to that function and then function does the work. But what if we need to pass the high amount of data, the function will copy that data, that will take so much time. That's when we pass arguments by reference.
 
@@ -867,3 +867,329 @@ int main() {
     return 0;
 }
 ```
+
+## Pointers
+
+A pointer is a special variable that hold the address of another variable in memory.
+
+For example, we have a variable which holds the value number 10. As you know, a variable is just a label for a memory
+address. Now we can declare other variable called ptr that holds the address of number.
+
+There are few reasons for using pointers.
+
+> Efficiently passing large data
+
+> Dynamic memory allocation
+
+> Enabling Polymorphism
+
+To get the address of an variable we prefix the variable with **&** and this is called **address-of operator**.
+
+```c++
+int number = 10;
+cout << &number; // 0x16fa2f448
+```
+
+To initialize a pointer we postfix a variable by *.
+
+```c++
+int number = 10;
+
+int* ptr = &number;
+```
+
+If we don't initialize the pointer then like other uninitialized variables, it's gonna hold **garbage**.
+The problem with this uninitialized pointer is that we might access the part of memory we are not supposed to and in that
+case the operating system gonna terminate our program and say **memory access violation**.
+
+If we don't know,for what variable it's gonna be initialized, we can initialize it to null pointer with keyword **nullptr**.
+A **nullptr** is a pointer that doesn't point to anything. In old C++, it was initialized with **NULL** or **0** but now 
+in modern C++ we have **nullptr**. 
+
+With **nullptr**, we can also check to see if ptr is initialized using if block.
+
+```c++
+if(ptr != nullptr) {
+    ...
+}
+```
+
+We have another **Indirection or de-referencing operator**, with that we can access the data for the memory location that
+pointer is holding.
+
+```c++
+int number = 10;
+
+// The & is the address-of operator
+int* ptr = &number;
+
+cout << *ptr; // 10
+
+// Indirection or de-referencing operator
+*ptr = 20;
+
+cout << number; // 20
+```
+
+Note that, pointers can also be initialized like **int \*ptr = &number;**, but we should not follow this approach, because
+it can confusing with **Indirection or de-referencing operator**.
+
+**Constant Pointers**
+
+There are three scenarios, when using constant pointers.
+
+1. Data is constant.
+2. Pointer is constant.
+3. Data and Pointer both are constant.
+
+```c++
+// Data is constant
+// We have to set the same type for the pointer, and with that pointer can't change value of x using InDirection operator.
+// But we can still change the value of ptr to store a different address.
+const int x = 10;
+const int* ptr = &x;
+
+// Pointer is constant
+// We have to write const after the asterisk to declare a constant pointer.
+int x = 10;
+int* const ptr = &x;
+
+// When both are constant
+const int x = 10;
+const int* const ptr = &x;
+
+// Now, neither ptr can be changed nor the variable it is holding the address of. 
+```
+
+**Passing pointers to functions**
+
+Previously, we passed the props in a function as arguments using reference operator which is modern way, but we can also
+pass data to function using pointers.
+
+
+```c++
+void increasePrice(double& price) {...} // Reference operator
+
+// Passing props with pointers
+
+void increasePrice(double* price) {
+    *price *= 1.2;
+}
+
+void main() {
+    double price = 100;
+    increasePrice(&price);
+    
+    cout << price; // 120
+    
+    return 0;
+}
+```
+
+
+**Relationship between pointers and arrays**
+
+Now, as we know that when we print any array on console, we see its memory address, which is actually a pointer.
+
+```c++
+int numbers[] = {10, 20, 30};
+int* ptr = numbers;
+
+cout << *ptr; // 10, the address of array holds the first value of the array
+
+// With that we can also access other elements
+
+cout << *ptr[1]; // 20
+```
+
+Also, when we pass arrays to functions, their address is passed that's why we can't iterate or use size function over
+them. That's why we always pass the size as arguments to the function because we can access the values using a pointer
+as shown in above example.
+
+**Pointer Arithmetic**
+
+For example we have an int array, and then we create a pointer variable. With that pointer, we can add or subtract intergers
+with it.
+
+If we increment the pointer by 1, it will be incremented by the size of its data type, for example if the int is stored
+at 100 in memory. Then in memory it will store the first element from 100-103 as int takes 4 bytes of memory.
+
+```c++
+int numbers[] = {1, 2, 3, 4};
+int* ptr = numbers;
+
+cout << ptr; // 1
+
+ptr++;
+
+cout << ptr; // 2
+```
+
+Similarly, we can use subtract, but we can't use any other operators.
+
+**Comparing Pointers**
+
+We can compare pointers address, by using == or != operators also > , < in arrays.
+
+```c++
+// Print numbers from last element to first, by using pointers.
+
+int main() {
+    int numbers[] = {10, 20, 30};
+
+    int* ptr = &numbers[size(numbers) - 1];
+
+    while(ptr >= numbers) {
+        cout << *ptr << endl;
+        ptr--;
+    }
+
+    return 0;
+}
+```
+
+**Dynamic Memory Allocation**
+
+Now, we if we create an array, we have to supply its limit, but what if user passes more than that, or so less that our
+memory is wasted that's when we use pointers for dynamic memory allocation. Now, for that first we create an array with
+space of 10. Then during our program execution or at runtime, if we need more space, we can allocate it on demand, this 
+is dynamic memory allocation. Now to allocate memory dynamically, we use different syntax.
+
+```c++
+// Stored in memory called Stack
+int numbers[] = {1, 2, 3};
+
+// Stored in memory called Heap (Free Store)
+int* numbers = new int[10];
+```
+
+The good thing about variables stored in **stack memory** is that, when a function finishes execution, the memory is automatically
+released when out of scope, and we can use that space again for another functions.
+
+Now, In contrast, when we declare a variable on the heap using new operator, we are responsible for clean up and that
+means if we don't do our job properly the memory allocated for the variables will never get released and our program is
+gonna end up consuming more and more memory and eventually its gonna crash. We say our program is having a **memory leak**
+means constantly consuming more and more memory.
+
+So, once we are finished with this variable we should always deallocate memory using the **delete operator**.
+
+```c++
+int* numbers = new int[10];
+int* number = new int;
+
+delete number;
+delete[] numbers;
+
+// Not mandatory, It's a good practice to always reset our variables
+
+numbers = nullptr;
+number = nullptr;
+```
+
+**Dynamically Resizing an Array** 
+
+```c++
+#include <iostream>
+
+using namespace std;
+
+
+int main() {
+    int capacity = 5;
+    int* numbers = new int[capacity];
+    int entries = 0;
+
+
+    while(true) {
+        cout << "Number: ";
+        cin >> numbers[entries];
+
+        if(cin.fail()) break;
+        entries++;
+
+        if(entries == capacity) {
+            // Create a temp array twice the size
+            capacity *= 2;
+            int* temp = new int[capacity];
+
+            // Copy all the elements to new array
+            for(int i = 0; i < entries; i++)
+                temp[i] = numbers[i];
+
+            // Have "numbers" pointer pointing to the new array
+            delete[] numbers;
+            numbers = temp;
+        }
+    }
+
+    for(int i = 0; i < entries; i++)
+        cout << numbers[i] << endl;
+
+
+    delete[] numbers;
+
+    return 0;
+}
+```
+
+But, we have to never implement this our own, because it is already built in **C++ standard library** with class called
+**Vector**.
+
+**Smart Pointers**
+
+Now, in real world, we have 100's or 1000's of functions where we use pointer variables to store in a heap but what if we
+forget to free up the memory allocated to them, this will eventually result in memory means constantly increase in memory.
+It seems easy to delete the pointer's memory, but in real world, with many function we can get confused where and when 
+we have to delete a pointer. That's when we use Smart Pointers.
+
+There are two types of smart pointers which are Unique and Shared pointers.
+
+**Working with Unique Pointers**
+
+A unique pointer is kind of pointer that holds the piece of memory it points to, so we can't have another unique pointer
+pointing to the same variable for that we use shared pointers.
+
+```c++
+#include <iostream>
+#include <memory>
+
+using namespace std;
+
+
+int main() {
+    unique_ptr<int> x(new int);
+    auto y = make_unique<int>();
+    auto numbers = make_unique<int[]>(5);
+
+    return 0;
+}
+```
+
+**unique_ptr** is a generic class, so we pass the type in angle brackets and it creates an instance **x** pointing to the
+pointer created using **new int**.
+
+Now, this class have several methods so it automatically deletes the allocated memory when execution is finished.
+
+We can also simplify it by using a generic function called **make_unique** and set the type auto to prevent the code from
+being verbose.
+
+_We can change the value of variables as same like other pointers, but we can't perform arithmetic operations on that._
+
+**Using Shared Pointers**
+
+Most of the times **unique pointers** are used, but we can use **shared pointers** where two pointers point to same 
+memory location.
+
+```c++
+auto x = make_shared<int>();
+*x = 10;
+
+shared_ptr<int> y(x);
+
+cout << y; // 10
+```
+
+
+
+
+
