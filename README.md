@@ -1189,7 +1189,259 @@ shared_ptr<int> y(x);
 cout << y; // 10
 ```
 
+## Strings
+
+**C Strings**
+
+To create a string using C string method, we declare a char array and use a special character **\0** to represent the
+end of the array that is called **Null Terminator**.
+
+Another way to initialize a string variable is String Literal.We wrap the string with double quotes to initialize a string
+literal. Internally, it is stored as a char[] same as above example and that special character is added automatically.
+
+```c++
+// Using char []
+char name[6] = {'V', 'i', 'j', 'a', 'y', '\0'};
+
+// Using string literal
+
+char name[6] = "Vijay";
+```
+
+Now we can always get the value of any index of string using bracket notation, and change its value.
+
+```c++
+char name[6] = "Vijay";
+
+name[0] = 'v'; // Character Literal wrapped in single quotes.
+```
+
+_Literal is a fancy name in computer science for a value._
+
+Now, we have a bunch of functions to work with **cstring** and for them we have to include **cstring** file but its already
+included in iostream by default so we don't need to explicitly include that file. Most of the functions are used because
+we can't compare two arrays or copy arrays like integers or something.
+
+Also, if we are copying a variable to any other variable, we have allocate a large space so that it doesn't occupy the 
+memory that is not needed.
+
+```c++
+    char name[50] = "Vijay";
+    char lastName[] = "Verma";
+
+    // To calculate the length of string
+    cout << ::strlen(name) << endl; // 5
+
+    // To concatenate two strings, and the first argument is changed to concatenated string.
+    ::strcat(name, lastName); // name => VijayVerma
+
+    // To copy a string, the first argument value is changed to the second argument's value.
+    ::strcpy(name, lastName); // name => Verma
+
+    // Comparing strings
+    if(::strcmp(name, lastName) < 0) cout << "name alphabetically comes before lastName" << endl;
+    else if(::strcmp(name, lastName) > 0) cout << "name alphabetically comes after lastName" << endl;
+    else cout << "Equal" << endl; // Means it returns 0
+```
+
+**C++ Strings**
+
+To declare a string variable we use string type implemented as a class in C++ Standard Library. Internally it uses a char[]
+because in C++ we don't have a string type in C++. Now, instances of the string class, we call them string objects. Now, 
+all these objects have different function that we can access using **.** operator.
 
 
+```c++
+    string name = "Vijay";
+
+    name[0] = 'v';
+
+    // Getting length of string
+    cout << name.length();
+
+    // Concatenating strings
+    name  += "Verma";
+    cout << name << endl; // Vijay Verma
+
+    // Copying strings
+    string another = name;
+
+    // Comparing strings
+    if(name == another) cout << "Same";
+
+    // Checking if our string starts with a char or a string
+    cout << name.starts_with('v');
+
+    // Similarly, we have ends_with and empty to check if string is empty
+    cout << name.empty();
+
+    // front() method returns the first character of string similarly we have back().
+    cout << name.front();
+```
+
+**Modifying Strings**
+
+```c++
+    string name = "Vijay";
+
+    // We can use append method to add another string at the end of string.
+    // Now, the append method like many other function is overloaded, so we have several different versions of this function.
+
+    name.append(" Verma");
+    cout << name << endl;
+    // Vijay Verma
+
+    // We have insert method to insert a string at a particular position.
+
+    name.insert(0, "I am ");
+    cout << name << endl;
+    // I am Vijay Verma
+
+    // erase method is used for erasing characters in a string starting from index and erases n characters.
+
+    name.erase(0, 2);
+    cout << name << endl;
+    // am Vijay Verma
+
+    // clear method to set the string to an empty string.
+
+    name.clear();
+    cout << name << endl;
+    // ""
+
+    // We can use replace method to replace some characters of a string.
+    
+    name = "Vijay";
+    name.replace(0, 2, "VI");
+    cout << name << endl;
+    // VIjay
+```
+
+**Searching Strings**
+
+**find** method takes the string as parameters and returns the position of that in the string.
+
+```c++
+string name = "Vijay Verma";
+name.find('a'); // 3
+```
+
+We can optionally provide the second argument for start position to search for the string or character.
+
+```c++
+string name = "Vijay Verma";
+name.find('a', 5); // 10
+```
+
+If we search for 'A' in above example, we will get a very large number, because it's return type is size_t that's why
+it can't return a negative number but we can compare this value with -1. 
+
+Now, we have similar method called **rfind**, but it searches start from the end of the string.
 
 
+```c++
+string name = "Vijay Verma";
+name.rfind('a'); // 10
+```
+
+**find_first_of** is used to find occurrence of any character of string.
+
+```c++
+string name = "Vijay";
+name.find_first_of(",.;"); // returns -1 but as the largest number of type size_t
+```
+
+Similarly, like **rfind** we have **find_last_of** to search from last in a string.
+
+Also we have **find_first_not_of** and **find_last_not_of** which return the position that is not any of charters passed
+as arguments.
+
+**Extracting Substrings**
+
+**substr(start_position, number_of_characters_to_extract)** function is used to extract a sub string from a string, it 
+also takes two arguments and if we don't pass any arguments it returns the copy of a string.
+
+```c++
+    // Function to extract the first and last name from a name.
+    
+    string name = "Vijay Verma";
+
+    auto index = name.rfind(' ');
+
+    string firstName = name.substr(0, index);
+    string lastName = name.substr(index + 1);
+
+    cout << firstName << endl;
+    cout << lastName << endl;
+```
+
+**Working with characters**
+
+**islower** function is used to check if a given character is lower case or not.
+
+```c++
+string name = "Vijay Verma";
+cout << islower(name[0]); // 0
+```
+
+> **isupper** function is used to check if a given character is upper case or not.
+
+> **isalpha** function is used to check if a given character is an alphabet or not.
+
+> **isdigit** function is used to check if a given character is a digit or not.
+
+> **isspace** function is used to check if a given character is space or not.
+
+> **toupper** is used to convert to upper case and returns the number that represents the upper case of any character.
+
+```c++
+cout << toupper('a'); // 65 for 'A'
+
+// C style casting
+cout << (char) toupper('a'); // 'A'
+```
+
+Similarly, we have **tolower**.
+
+
+**String_Numeric Conversion Functions**
+
+_The functions for converting strings to other type starts with s then to and then the first letter of type to convert into._
+
+```c++
+double price = stod("19.99"); // 19.99
+double price = stod("19.x99"); // 19
+double price = stod("x19.99"); // Exception
+```
+
+**to_string** is a overload function to convert many types to string type.
+
+```c++
+string str = to_string(19) // 19
+string str = to_string(19.9) // 19.900000
+```
+
+If we want to have more control over how these numbers are converted, we use **streams**.
+
+
+**Escape Sequences**
+
+Escape sequences are used to escape some special characters.
+
+```c++
+string str = "C:\\my\\"; // C:\my\
+
+string hello = "\"Hello World\""; // "Hello World"
+
+char ch = '\''; // '
+```
+
+We use **\n** for new line and we can use **\t** for adding a tab.
+
+**Raw Strings**
+
+Escape sequences can be messier sometimes, that's when we use raw strings.
+
+```c++
+string str = R"("C:\Localdisk C\my folder\")"
+```
