@@ -1,24 +1,39 @@
 #include <iostream>
+#include <ctime>
+#include <iomanip>
 
 using namespace std;
 
-bool isValid(string customerNumber) {
-    if(customerNumber.length() != 6) return false;
 
-    for(int i = 0; i < 2; i++)
-            if(!isalpha(customerNumber[i])) return false;
+// Pascal Convention
 
-    for(int i = 2; i < customerNumber.length(); i++)
-            if(!isdigit(customerNumber[i])) return false;
+struct Movie {
+    string title;
+    int releaseYear;
+};
 
-    return true;
-}
-
+struct Customer {
+    int id;
+    string name;
+    string email;
+};
 
 int main() {
-    string name = "Vijay Verma";
+    Customer customer;
 
-    cout << isValid("a11231");
+    cout << "Name: ";
+    cin >> customer.name;
+
+    cout << "Email: ";
+    cin >> customer.email;
+
+    customer.id = (int) time(nullptr);
+
+    cout << left;
+    cout << setw(10) << "ID: " << customer.id << endl;
+    cout << setw(10) << "Name: " << customer.name << endl;
+    cout << setw(10) << "Email: " << customer.email << endl;
+
 
     return 0;
 }

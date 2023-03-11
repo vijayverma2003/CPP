@@ -12,7 +12,7 @@ int main()
 }
 ```
 
-**int** stands for interger, means our main function is gonna return an integer.
+**int** stands for integer, means our main function is gonna return an integer.
 
 **#include** is used for using CSL, that is C++ standard library. The standard library provides bunch of capabilties that we need when creating applications after **#include** we in angle brackets we write the file we want to include, in above program we included **iostream** which is short for _input output stream_, in this file we have capabilities for printing something on the screen or getting input from the user.
 
@@ -1445,3 +1445,4 @@ Escape sequences can be messier sometimes, that's when we use raw strings.
 ```c++
 string str = R"("C:\Localdisk C\my folder\")"
 ```
+
