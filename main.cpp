@@ -1,39 +1,29 @@
 #include <iostream>
-#include <ctime>
-#include <iomanip>
 
 using namespace std;
 
 
-// Pascal Convention
+int getNumber(const string& prompt) {
+    int number;
+    while(true) {
+        cout << prompt;
+        cin >> number;
+        if(cin.fail()) {
+            cout << "Enter a valid value!" << endl;
+            cin.clear(); // Changes cin to a good state
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        } else break;
+    }
 
-struct Movie {
-    string title;
-    int releaseYear;
-};
+    return number;
+}
 
-struct Customer {
-    int id;
-    string name;
-    string email;
-};
 
 int main() {
-    Customer customer;
+    int first = getNumber("First: ");
+    int second = getNumber("Second: ");
 
-    cout << "Name: ";
-    cin >> customer.name;
-
-    cout << "Email: ";
-    cin >> customer.email;
-
-    customer.id = (int) time(nullptr);
-
-    cout << left;
-    cout << setw(10) << "ID: " << customer.id << endl;
-    cout << setw(10) << "Name: " << customer.name << endl;
-    cout << setw(10) << "Email: " << customer.email << endl;
-
+    cout << "You entered " << first << " and " << second << endl;
 
     return 0;
 }
