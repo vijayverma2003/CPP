@@ -1,4 +1,4 @@
-/Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/Applications/CLion.app/Contents/bin/ninja/mac/ninja -G Ninja -S /Users/vijay/CLionProjects/C++ -B /Users/vijay/CLionProjects/C++/cmake-build-debug
+/Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/Applications/CLion.app/Contents/bin/ninja/mac/ninja -DCMAKE_CXX_COMPILER=/usr/bin/clang++ -G Ninja -S /Users/vijay/CLionProjects/C++ -B /Users/vijay/CLionProjects/C++/cmake-build-debug
 -- Configuring done
 -- Generating done
 -- Build files have been written to: /Users/vijay/CLionProjects/C++/cmake-build-debug

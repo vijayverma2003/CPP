@@ -1446,3 +1446,223 @@ Escape sequences can be messier sometimes, that's when we use raw strings.
 string str = R"("C:\Localdisk C\my folder\")"
 ```
 
+# Classes
+
+## What is Object Oriented Programming?
+
+We have different ways to write software which is called **Programming Paradigm**. Some of them are Procedural, Functional, 
+Object Oriented, Event Driven and many many more.
+
+Object Oriented Programming is a paradigm where objects are the main building block for a software.
+
+An object is a software entity that has attributes (properties) and functions (methods).
+
+A class is a blueprint or recipe for creating objects.
+
+Structures and more about data and classes are about data and behavior. So, a class combines data and functions that operates 
+on data together. This is one of the main principal of OOP that is Encapsulation.
+
+**Encapsulation means combining the data and functions that operate on the data into one unit.**
+
+
+## Defining a Class
+
+
+
+*Header File*
+```c++
+#ifndef C___RECTANGLE_H
+#define C___RECTANGLE_H
+
+// width and height are called Attributes, Member Variables, Fields, and Properties.
+// getArea and draw are called member functions or methods.
+class Rectangle {
+    int width;
+    int height;
+    void draw();
+    int getArea();
+};
+
+
+#endif //C___RECTANGLE_H
+```
+
+*Source File*
+```c++
+#include "Rectangle.h"
+#include <iostream>
+
+using namespace std;
+
+void Rectangle::draw() {
+    cout << "Drawing a rectangle..." << endl;
+    cout << "Dimensions: " << width << ", " << height << endl;
+}
+
+int Rectangle::getArea() {
+    return width * height;
+}
+```
+
+The reason we have create a header file is because when we make any changes in header file every file related to it is 
+recompiled whereas if we make changes in source files then only source files will be recompiled. This is the reason we have
+to separate the implementation of a class from its interface.
+
+Unlike structures all the the properties and methods of a class are private, to make them we have to type private: before
+initializing them.
+
+```c++
+class Rectangle {
+public:
+    int width;
+    int height;
+    void draw();
+    int getArea();
+};
+```
+
+```c++
+    Rectangle rectangle;
+    rectangle.width = 10;
+    rectangle.height = 20;
+
+    cout << rectangle.getArea();
+ ```
+
+## Access Modifiers
+
+When objects store bad data then we say they go in a invalid state.
+
+**Data Hiding is also a principal of OOP, which says that a class should hide its internal data from the outside code and 
+provide functions for accessing the data. This is when we use access modifiers.
+
+**public, private and protected** are some of access modifiers we use to apply data hiding.
+
+## Getters and Setters
+
+```c++
+// Header File
+class Rectangle {
+public:
+    void draw();
+    int getArea();
+    // Getters or Accessors    
+    int getWidth();
+    // Setters or Mutators
+    void setWidth(int width);
+private:
+    int width;
+    int height;
+};
+
+int Rectangle::getWidth() {
+    return width;
+}
+
+// Source File
+void Rectangle::setWidth(int width) {
+    if(width < 0)
+        throw invalid_argument("width");
+    this->width = width;
+}
+```
+
+## Constructors
+
+A constructor is a special function inside a class that is used to initialize variables.
+
+```c++
+// Header
+public:
+    Rectangle(int width, int height);
+
+// Source
+Rectangle::Rectangle(int width, int height) {
+    setWidth(width);
+    setHeight(height);
+}
+
+// Modern Way
+Rectangle rectangle {10, 20};
+// or
+Rectangle rectangle(10, 20);
+```
+
+## Member Initializer List
+
+```c++
+Rectangle::Rectangle(int width, int height) : width{width}, height{height} {}
+```
+
+The above method to initialize variables is more efficient and the compiler initialize these variables in one go.
+The first is width attribute and the width in curly braces is width parameter. If we do it other way, the complier will
+create a member initializer list first and then initialize the variables but we can use this only for simple initializations.
+
+We can initialize variables with both methods at same time.
+
+
+## Default Constructor
+
+Now, we can't create a rectangle without passing arguments for width and height parameters and to do so we have to create 
+a **default constructor**. A default constructor is a constructor without any parameters.
+
+```c++
+class Rectangle {
+public:
+    Rectangle() = default;
+    Rectangle(int width, int height);
+```
+
+If we don't create any constructor, C++ compiler automatically creates a default constructor but the moment we create a
+constructor, it stops creating default constructor.
+
+## Using the explicit keyword
+
+If we create a class with a constructor that takes only one argument, then its called a **Converting Constructor**.
+
+So, when we create an instance of that class, and pass it to a function we can also pass the argument for that constructor too.
+and when the function will be executed it will create the instance of that class and then do its job. and to prevent that from
+happening we use explicit keyword before the constructor initialization in header file.
+
+```c++
+class Person {
+public:
+    Person(int age);
+    
+private:
+    int age;
+};
+
+
+// main.cpp
+
+void showPerson(Person person) {...}
+
+Person person {10};
+showPerson(person);
+// or
+showPerson(10); // Conversion happens here.
+
+// header file
+public:
+    explicit Person(int age);
+`
+```
+
+## Constructor Delegation
+
+We can define more constructors with more parameters but we don't want to repeat the same code for initializing the previous 
+variables that is where **constructor delegation** comes to the picture. With this technique, we can have one constructor 
+delegate the initialize of some variables to previous constructor.
+
+```c++
+Rectangle::Rectangle(int width, int height) {
+    setWidth(width);
+    setHeight(height);
+}
+
+Rectangle::Rectangle(int width, int height, const string &color) : Rectangle(width, height) // Constructor Delegation
+{
+    this->color = color;
+}
+```
