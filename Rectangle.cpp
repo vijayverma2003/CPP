@@ -7,16 +7,16 @@
 
 using namespace std;
 
-void Rectangle::draw() {
+void Rectangle::draw() const {
     cout << "Drawing a rectangle..." << endl;
     cout << "Dimensions: " << width << ", " << height << endl;
 }
 
-int Rectangle::getArea() {
+int Rectangle::getArea() const {
     return width * height;
 }
 
-int Rectangle::getWidth() {
+int Rectangle::getWidth() const {
     return width;
 }
 
@@ -37,6 +37,7 @@ void Rectangle::setHeight(int height) {
 }
 
 Rectangle::Rectangle(int width, int height) {
+    objectsCount++;
     setWidth(width);
     setHeight(height);
 }
@@ -45,5 +46,14 @@ Rectangle::Rectangle(int width, int height, const string &color) : Rectangle(wid
     this->color = color;
 }
 
+Rectangle::~Rectangle() {
+    cout << "Destructor Called";
+}
+
+int Rectangle::objectsCount = 0;
+
+int Rectangle::getObjectsCount() {
+    return objectsCount;
+}
 
 

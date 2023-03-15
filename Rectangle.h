@@ -14,17 +14,24 @@ public:
     Rectangle() = default;
     Rectangle(int width, int height);
     Rectangle(int width, int height, const string& color);
-    void draw();
-    int getArea();
-    int getWidth();
-    void setWidth(int width);
+
+    ~Rectangle();
+
+    void draw() const;
+    int getArea() const;
+    int getWidth() const;
     int getHeight() const;
+
+    void setWidth(int width);
     void setHeight(int height);
+
+    static int getObjectsCount();
 private:
     int width;
     int height;
     string color;
 
+    static int objectsCount;
 };
 
 

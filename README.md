@@ -1666,3 +1666,127 @@ Rectangle::Rectangle(int width, int height, const string &color) : Rectangle(wid
     this->color = color;
 }
 ```
+
+## The copy constructor
+
+When we create an instance, we can easily copy the first instance to a variable because under the hood the C++ Compiler 
+generates a copy constructor that copies all the members of the object to the second object. But there are times, we want 
+to change the logic of copying an object that's when we can create our own copy constructor.
+
+
+```c++
+...
+public:
+    Rectangle() = default;
+    Rectangle(const Rectangle& source);
+...
+
+
+Rectangle::Rectangle(const Rectangle &source) {
+    cout << "Copying Rectangle";
+    this->width = source.width;
+    this->height = source.height;
+    this->color = source.color;
+}
+```
+
+But sometimes, what if we don't want to create the copy constructor for a class, then we use **delete** operator.
+
+```c++
+...
+public:
+    Rectangle() = default;
+    Rectangle(const Rectangle& source) = delete;
+...
+```
+
+Also, note that when we pass the a class object to a function without referencing it, then its value is copied using copy 
+constructor.
+
+## The Destructor
+
+Destructors are special functions that are automatically called when our objects are being destroyed. This is the opportunity 
+for us to free up space that our system is using. They are used when we work with files, streams etc.
+
+```c++
+// Header file
+public:
+    ~Rectangle(); // not a overloading function, only one destructor can be created in a class
+
+// Source File
+Rectangle::~Rectangle() {
+cout << "Destructor Called";
+}
+
+// The above method will be called when our object will be destroyed.
+```
+
+## Static Members 
+
+Now, when we create instances of classes we get separate objects with separate properties. But, we can also create the 
+properties that won't be copied and can be used with the class itself. These are called **Static Members**.
+
+```c++
+// Header file
+class Rectangle {
+public:
+...
+static int getObjectsCount();
+
+private:
+...
+static int objectsCount;
+};
+
+// Source file
+
+Rectangle::Rectangle(int width, int height) {
+objectsCount++;
+setWidth(width);
+setHeight(height);
+}
+
+int Rectangle::getObjectsCount() {
+return objectsCount;
+}
+
+
+
+// Main file
+
+cout << Rectangle::objectsCount << endl;
+```
+
+## Constant Objects and Functions
+
+We can declare a class a const, and we won't be able to change the value of its members, and all the setters will not be
+shown but with that other functions also can't be used that's when we use **const** keyword after function declaration to 
+tell the compiler that we are not going to change the value of members in this function.
+
+
+```c++
+void Rectangle::draw() const {
+    cout << "Drawing a rectangle..." << endl;
+    cout << "Dimensions: " << width << ", " << height << endl;
+}
+```
+
+
+## Array of objects
+
+```c++
+Rectangle rectangles[3] = {Rectangle(), Rectangle(10, 20), Rectangle(10, 20, "red")};
+
+or
+
+Rectangle rectangles[3] = {{}, {10, 20}, {10, 20, "red"}};
+```
+
+Note that, if you want to initialize an array of objects you have to create a default constructor in class if needed.
+
+
+
+
+
+
+
