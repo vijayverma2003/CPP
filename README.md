@@ -1785,8 +1785,314 @@ Rectangle rectangles[3] = {{}, {10, 20}, {10, 20, "red"}};
 Note that, if you want to initialize an array of objects you have to create a default constructor in class if needed.
 
 
+# Operator Overloading
+
+# Overloading the Equality Operator
+
+To create functions for operator overloading, we create a public method in header file with name operator followed by
+sign of operator.
+
+If, we overload == operator, then modern C++ compiler automatically creates inequality operator overload.
+
+```c++
+// Header file
+
+class Point {
+public:
+    Point(int x, int y);
+
+    bool operator==(const Point& other) const;
+
+    int getX() const;
+    int getY() const;
+    void setX(int x);
+    void setY(int y);
+private:
+    int x;
+    int y;
+};
 
 
+// Source file
+Point::Point(int x, int y) : x(x), y(y) {}
 
+bool Point::operator==(const Point &other) const {
+return (x == other.x) && (y == other.y);
+}
 
+// Main file
 
+int main() {
+Point pt1 {2, 3};
+Point pt2 {2, 3};
+
+if(pt1 == pt2) cout << "Equal";
+
+return 0;
+}
+
+// Equal
+```
+
+## Comparison Operator
+
+```c++
+bool Length::operator<(const Length &other) const {
+    return value < other.value;
+}
+
+bool Length::operator>(const Length &other) const {
+    return value > other.value;
+}
+
+bool Length::operator<=(const Length &other) const {
+    return !(value > other.value);
+}
+
+bool Length::operator>=(const Length &other) const {
+    return !(value < other.value);
+}
+```
+
+## Spaceship Operator
+
+Creating every single comparison operator is tds, in above example we created comparison overloads for simple integers but
+as we work with complex objects the cost of finding relationship using these operators increases. That's when in modern
+C++ we use spaceship operator **<=>**, This operator has a return type of class **strong_ordering** and to compare that 
+we can use its methods using **scope resolution operator** **::**
+
+```c++
+    int x = 10;
+    int y = 10;
+    
+    strong_ordering result = x <=> y;
+    
+    if(result == strong_ordering::less) {
+        ...
+    }
+```
+
+Also, for our classes, compiler automatically generates the other comparison operators, if we overload the spaceship operator.
+So, In modern C++, to compare objects we only need to overload two operators, == and <=>, and modern C++ compiler will
+generate other operators for us.
+
+## Overloading the stream insertion operator
+
+In order to overload the steam insertion operator, we have to declare this function outside the header class because every
+operator overload function thinks that the left value is the current object but when we use steam insertion operator the 
+left object should always be **cout** and we can't compare **cout** with our object. Also, we need to return the reference to
+the operator and we need to return the stream in the function so that we can use stream insertion operator many times.
+
+```c++
+ostream& operator<< (ostream& stream, const Length& length);
+
+ostream& operator<< (ostream& stream, const Length& length) {
+    return stream << length.getValue();
+}
+```
+
+## Overloading the stream extraction operator
+
+```c++
+istream& operator>> (istream& stream, Length& length);
+
+istream &operator>>(istream &stream, Length &length) {
+    int value;
+    stream >> value;
+    length.setValue(value);
+    return stream;
+}
+```
+
+## Friends of Classes
+
+There are times, we need to access the private properties or methods of a class like for the operators, we defined above.
+In those cases, we have to add the definition of these functions in private methods of the class and prefix it with the
+**friend** keyword.
+
+```c++
+class Length {
+public:
+    ...
+private:
+    int value;
+    friend ostream& operator<< (ostream& stream, const Length& length);
+};
+
+ostream& operator<< (ostream& stream, const Length& length);
+```
+
+## Overloading the Arithmetic Operators
+
+```c++
+Length operator+ (const Length& other) const;
+
+Length Length::operator+(const Length &other) const {
+    return Length(value + other.value);
+}
+```
+
+## Overload Compound Assignment Operators
+
+```c++
+Length& operator+= (const Length& other);
+
+Length& Length::operator+=(const Length &other) {
+    value += other.value;
+    return *this;
+}
+```
+
+## Overloading the Assignment Operator
+
+Although, C++ compiler automatically overloads the assignment operator, but we can always change how an object is copied 
+like we did for other overloading functions.
+
+```c++
+Length& operator= (const Length& other);
+
+Length& Length::operator=(const Length &other) {
+    value = other.value;
+    return *this;
+}
+```
+
+Note that, the assignment operator works differently at different tiems.
+
+```c++
+Length first {10};
+
+// Copy constructor is called (NEW)
+Length second = first;
+
+// Assignment overload is called (EXISTING)
+second = first;
+```
+
+## Overloading the Unary Operators
+
+Increment and Decrement operators are unary operators which can be used as a prefix or a postfix.
+
+```c++
+Length& operator++(); // Prefix
+Length& operator++(int); // Postfix
+
+Length& Length::operator++() {
+    value++;
+    return *this;
+}
+
+Length Length::operator++(int) {
+    Length copy = *this;
+    operator++();
+    return copy;
+}
+```
+
+## Overloading the Subscript Operator
+
+The subscript operator is the **[]** operator that we use to access the individual element of an array.
+
+```c++
+// Header file
+class Array {
+public:
+    explicit Array(size_t size);
+    ~Array();
+    int& operator[](size_t index);
+private:
+    int* values;
+    size_t size;
+};
+
+// Source file
+#include <stdexcept>
+
+Array::Array(size_t size) {
+    values = new int[size];
+    this->size = size;
+}
+
+Array::~Array() {
+    delete[] values;
+}
+
+int& Array::operator[](size_t index) {
+    if(index >= size) throw std::invalid_argument("index");
+    return values[index];
+}
+
+```
+
+## Overloading the Indirection Operator
+
+We use Indirection Operator to dereference a pointer.
+
+```c++
+// Header file
+class SmartPointer {
+...
+    int& operator*();
+...
+};
+
+int& SmartPointer::operator*() {
+    return *ptr;
+}
+```
+
+## Overloading Type Conversions
+
+```c++
+// Header file public
+operator int() const;
+
+// Source file
+Length::operator int() const {
+return value;
+}
+
+// Main
+Length length {10};
+int x = length;
+```
+
+If we want to cast an object to integer before assigning it then we can mark the overload function as explicit.
+
+```c++
+// Header file public
+explicit operator int() const;
+
+// Main
+Length length {10};
+int x = static_cast<int> length;
+```
+
+## Inline Functions
+
+So far, we are writing all our functions in source file or cpp file, but we can also write functions in header file.
+
+```c++
+int getValue() const {
+    return value;
+}
+```
+
+In above example, we are returning a value in a header file, and these are called **inline functions**.
+It gives us a slight performance boost, because compiler converts these inline functions to their return value otherwise
+its quite a overhead to go into a function and the go back the main function.
+
+But, we should not define all functions in header files, because header files are used to describe the interface of our 
+class and when we make any changes to header file, all the files related to it are recompiled so we should make it stable
+as possible. So, to reduce the compilation time we should define all our logic in a cpp or a source file. 
+
+The other reason for not defining functions in header file is because doing so causes clutter.
+
+So, To create an inline function in our source file or cpp file, we can use the **inline** keyword before a function, but 
+this is not guaranteed because it totally depends on the compiler. Also, use inline functions for very simple preferably
+one liners functions because every time we call that function it will be replaced and if we have more than one line, the
+size of file will increase and performance will decrease.
+
+*Stay away from these technique, unless you know what you are doing*
+
+Also, C++ Compiler will decide automatically whether it should make a function inline or not.

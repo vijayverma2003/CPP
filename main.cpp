@@ -1,19 +1,23 @@
-#include "Rectangle.h"
-#include "TextBox.h"
 #include <iostream>
-#include <memory>
+#include "Length.h"
+#include "Point.h"
+#include "Array.h"
+
 
 using namespace std;
 
 
 int main() {
-    auto* rectangle = new Rectangle(10, 20);
-    rectangle->draw();
-    delete rectangle;
-    rectangle = nullptr;
+    Point pt1 {1, 2};
+    Point pt2 {2, 3};
 
-    auto rect = make_unique<Rectangle>(10, 20);
-    rect->draw();
+    Point newPoint = ++pt1;
+
+    cout << newPoint << endl << pt1;
+
+    Array array{10};
+
+
 
     return 0;
 }
