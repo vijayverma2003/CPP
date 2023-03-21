@@ -1787,7 +1787,7 @@ Note that, if you want to initialize an array of objects you have to create a de
 
 # Operator Overloading
 
-# Overloading the Equality Operator
+## Overloading the Equality Operator
 
 To create functions for operator overloading, we create a public method in header file with name operator followed by
 sign of operator.
@@ -2096,3 +2096,289 @@ size of file will increase and performance will decrease.
 *Stay away from these technique, unless you know what you are doing*
 
 Also, C++ Compiler will decide automatically whether it should make a function inline or not.
+
+# Inheritance and Polymorphism
+
+## Inheritance
+
+**Inheritance** is a mechanism for reusing code so once we can implement common features in a base or parent class, and 
+we can use its properties and methods in a child or derived class.
+
+```c++
+#include "Widget.h"
+
+class TextBox : public Widget {
+...
+};
+```
+
+**public** here means that all the public members of parent class should be inherited as public members. If we use **private**
+that means that public members of parent class will be inherited as private members of child class.
+
+## Protected Members
+
+**protected** is also one of the access modifiers, similarly like private its members can't be used outside a class but
+we can be accessed in derived classes but private members can't.
+
+Declare protected members only when you only need to use them in derived class, otherwise stay away. ☠️
+
+## Constructors and Inheritance
+
+In Inheritance, the base class constructor is called before the constructor of derived class.
+
+To call the constructor of parent class in derived class.
+```c++
+TextBox::TextBox(const string& val, bool enabled) : Widget(enabled), value{value} {}
+```
+
+For creating constructors, that don't do anything but only passes values to base classes, we use parent class constructor, 
+in child class.
+
+```c++
+class TextBox: public Widget {
+public:
+    using Widget::Widget();
+private:
+    ...
+};
+```
+
+## Destructors and Inheritance
+
+In Inheritance, destructors of derived classes are called before the destructors of base class.
+
+## Conversion between base and derived classes
+
+If we have an object created from a class which inherits another class, we can assign the value of that object to the parent
+class and this is called **Up-casting**. but the other is not true, means Down-casting and its illegal.
+
+Upcasting also works when we pass an object from derived class to a function where it takes parent class as argument.
+When we pass the derived class object, the compiler has to discard some memory to copy an object. This is called **object**
+**slicing**.
+
+If, we use reference operator or a pointer in the function then no slicing happens and only members of parent class can be
+called in a function.
+
+## Overriding Methods
+
+We can override the methods by initializing in the derived class and when we call the method which exists in both parent 
+and child class, child class method will be called. If we pass a derived class to a function which take parent class as 
+an argument then the method of parent class will be called. Even though we passing a child class object using reference, 
+the compiler uses a technique called **static or early binding**. So at compile time, it knows that because we are working
+with a parent class object, the draw method of widget class has to be called.
+
+But, what if we have to use the method from the derived class that's when we use the **virtual** keyword. With this, we 
+tell the compiler to use a different technique called **Late or Dynamic Binding**. So, at runtime, the compiler will decide
+what draw method to call depending on the kind of object we are passing to the function.
+
+```c++
+// Widget
+
+virtual void draw() const;
+
+void Widget::draw() const {
+cout << "Drawing a widget" << endl;
+}
+
+// Textbox
+
+void TextBox::draw() const {
+cout << "Drawing a textbox" << endl;
+}
+
+// Main
+
+void showWidget(Widget& widget) {
+    widget.draw();
+}
+
+showWidget(Textbox box); // Drawing a textbox
+showWidget(Widget widget); // Drawing a widget
+```
+
+When overriding a base class method in derived class, its the best practice to use the virtual keyword.
+
+Another best practice is to use the **override** keyword in base class method declaration for overriding functions, because
+if we make any changes to the function in base class, the compiler will show us an error in the derived class.
+
+```c++
+class Widget {
+public:
+    virtual void draw(int number) const;
+}
+
+class TextBox : public Widget {
+public:
+void draw() const override; // ERROR
+...
+}
+```
+
+In above example, as we are not passing the parameters to the override method declaration, we get an error by using the
+override keyword.
+
+## Polymorphism
+
+**Polymorphism** is also one of the main principal of OOP, and it allows us to create applications that can be easily
+extended. 
+
+Poly means Many and morphs means forms, so polymorphism means **many forms**. This refers to situation where an object
+takes many forms.
+
+If a function takes an object from a parent class, and we call that function and pass two different objects from classes
+that inherits the same base class, in that case, the parameter of the function takes many forms.
+
+## Polymorphic Conditions
+
+```c++
+// Early or Static Binding
+vector<Widget> widgets;
+
+vector.push_back(TextBox());
+vector.push_back(CheckBox());
+
+for(auto widget: widgets) {
+    widget.draw(); // runs only widget draw method
+}
+```
+
+```c++
+// Dynamic or Late binding
+
+vector<unique_ptr<Widget>> widgets;
+
+vector.push_back(make_unique<TextBox()>);
+vector.push_back(make_unique<CheckBox()>);
+
+for(auto widget: widgets) {
+    widget->draw(); // Drawing a textbox, Drawing a Checkbox
+}
+```
+
+**vector<unique_ptr<Widget>> widgets;** is called the polymorphic collection so each object in this collection can take
+a different form at runtime.
+
+## Virtual Destructors
+
+While destructing the objects, the instances of the derived classes are called first, and at last the destructor of parent
+class is called. To destruct the parent class after every instance is destructed, we declare destructor of parent class
+as **virtual** for late or dynamic binding.
+
+So, here is the takeaway, whenever you add virtual methods to your class, you can have polymorphism somewhere in your project
+so to destruct the objects properly use a virtual destructor even the destructor is not gonna do anything. If the destructor
+is empty we can tell the compiler to generate a destructor by making it default.
+
+```c++
+virtual ~Widget = default;
+```
+
+## Abstract Classes
+
+In above examples, in real world there will be different algorithms for drawing a widget, so we don't want to implement 
+in widget class, but we want the user to implement that method in child class, that's when we assign the method declaration
+to 0 and that is called a **pure virtual method** and we don't have to implement that method.
+
+```c++
+// Pure Virtual Method
+virtual void draw() const = 0;
+```
+
+When, a class has at-east one **Pure Virtual Method** then we call it an abstract class, means we can't instantiate the
+objects from that class but we can still use abstract classes as pointers or reference because we need them for polymorphic
+behaviour.
+
+So, Abstract Classes can't be instantiated they exists purely to be inherited and purely to provide some code to other classes.
+
+Also, If we don't override the virtual method of an abstract class, then the derived class will be abstract as well.
+
+So, If a method that we can't define in a pure meaningful way we should declare that method as pure virtual method by assigning
+it to 0.
+
+## Final Classes and Methods
+
+Sometimes, we want some methods not to be overwritten in derived class, that's when we use **final** keyword.
+```c++
+class TextBox : public Widget {
+public:
+    void draw() const override final;
+    ...
+};
+```
+
+Now, we can't create a class that can override the draw method of TextBox class. 
+
+But, we can also declare a class as final and that class can't be inherited by other classes.
+
+```c++
+class TextBox final : public Widget {
+    ...
+};
+```
+
+## Deep Inheritance Hierarchies
+
+Too much of a good thing is a bad thing and deep inheritence among classes will make our code hard to understand. If we
+make any change in parent class, all derived classes need to be changed because they all are coupled to their parent class.
+And, If we make any changes to one class all the other classes needs to be recompiled. Limit the inheritance to maximum 
+of 3 levels.
+
+## Multiple Inheritance
+
+In C++, a class can also have multiple base classes, this is called multiple inheritance. An example is **iostream**
+inherits both **istream** and **ostream**.
+
+
+```c++
+// File Reader
+class FileReader {
+public:
+FileReader(const string& fileName) {
+cout << "Constructor of FileReader" << endl;
+};
+
+string fileName() {
+return "fileName";
+}
+
+string read() {
+return "Hello World";
+};
+};
+
+// File Writer
+class FileWriter {
+public:
+FileWriter(const string& fileName) {
+cout << "Constructor of FileWriter" << endl;
+};
+
+string fileName() {
+return "fileName";
+}
+
+void write(const string& content) {
+cout << content;
+}
+};
+
+// FileIO
+
+#include "FileReader.h"
+#include "FileWriter.h"
+
+class FileIO: public FileReader, public FileWriter {
+public:
+FileIO(string fileName): FileReader(fileName), FileWriter(fileName) {}
+};
+
+// Main
+
+int main() {
+FileIO file {"fileName"};
+file.FileReader::fileName();
+
+return 0;
+}
+```
+
+

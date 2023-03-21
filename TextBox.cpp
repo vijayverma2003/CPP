@@ -3,7 +3,7 @@
 //
 
 #include "TextBox.h"
-#include <string>
+#include <iostream>
 
 using namespace std;
 
@@ -15,4 +15,10 @@ void TextBox::setValue(const string& value) {
     this->value = value;
 }
 
-TextBox::TextBox(const string& val) : value{value} {}
+TextBox::~TextBox() {
+    cout << "Textbox Destructed" << endl;
+}
+
+void TextBox::draw() const {
+    cout << "Drawing a textbox" << endl;
+}

@@ -2,22 +2,17 @@
 #include "Length.h"
 #include "Point.h"
 #include "Array.h"
+#include "TextBox.h"
+#include "Square.h"
+#include "FileIO.h"
 
 
 using namespace std;
 
 
 int main() {
-    Point pt1 {1, 2};
-    Point pt2 {2, 3};
-
-    Point newPoint = ++pt1;
-
-    cout << newPoint << endl << pt1;
-
-    Array array{10};
-
-
+    FileIO file {"fileName"};
+    file.FileReader::fileName();
 
     return 0;
 }

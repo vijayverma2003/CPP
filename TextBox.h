@@ -6,13 +6,15 @@
 #define C___TEXTBOX_H
 
 #include <string>
+#include "Widget.h"
 
 using namespace std;
 
-class TextBox {
+class TextBox : public Widget {
 public:
-    TextBox() = default;
-    explicit TextBox(const string& value);
+    ~TextBox();
+
+    void draw() const override final;
     string getValue();
     void setValue(const string& value);
 private:
