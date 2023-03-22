@@ -22,7 +22,11 @@ int Rectangle::getWidth() const {
 
 void Rectangle::setWidth(int width) {
     if(width < 0)
-        throw invalid_argument("width");
+        throw invalid_argument("The width can not be negative!");
+
+    if(width > 100)
+        throw out_of_range{"The width can not be greater than 100!"};
+
     this->width = width;
 }
 
@@ -47,7 +51,7 @@ Rectangle::Rectangle(int width, int height, const string &color) : Rectangle(wid
 }
 
 Rectangle::~Rectangle() {
-    cout << "Destructor Called";
+//    cout << "Destructor Called";
 }
 
 int Rectangle::objectsCount = 0;

@@ -2381,4 +2381,230 @@ return 0;
 }
 ```
 
+# Exceptions
+
+## What are exceptions?
+
+In programming, exceptions are objects that are used to report an error while our program is running.
+
+## Throwing an exception
+
+```c++
+void Rectangle::setWidth(int width) {
+    if(width < 0)
+        throw invalid_argument("width");
+    this->width = width;
+}
+```
+
+## Catching an exception
+
+```c++
+void Rectangle::setWidth(int width) {
+    if(width < 0)
+        throw invalid_argument("The width can not be negative!");
+    this->width = width;
+}
+
+int main() {
+    try {
+        cout << "Width: ";
+        int width;
+        cin >> width;
+
+        Rectangle rect;
+        rect.setWidth(width);
+    }
+    catch (const invalid_argument& ex) {
+        cout << ex.what(); // ex.what() returns cstring of type const character pointer
+    }
+
+    return 0;
+}
+```
+
+```console
+Width: -1
+The width can not be negative!
+```
+
+## Catching Multiple Exceptions
+
+```c++
+    void Rectangle::setWidth(int width) {
+        if(width < 0)
+            throw invalid_argument("The width can not be negative!");
+    
+        if(width > 100)
+            throw out_of_range{"The width can not be greater than 100!"};
+    
+        this->width = width;
+    }
+
+    try {
+        cout << "Width: ";
+        int width;
+        cin >> width;
+
+        Rectangle rect;
+        rect.setWidth(width);
+    }
+    catch (const invalid_argument& ex) {
+        cout << ex.what();
+    }
+    catch (const out_of_range& ex) {
+        cout << ex.what();
+    }
+```
+
+Both **invalid_argument** and **out_of_range** errors are derived from same class called **logic_error**.
+As we read about that, the derived class can be converted into parent class by upcasting but parent class can't be 
+converted to derived class.
+
+So, here to refactor this code, we can catch **logic_error** instead of catching other two errors.
+
+```c++
+catch (const logic_error& ex) {
+    cout << ex.what();
+}
+```
+
+If we want to change the logic of any catch block, then we have to order them according to their specificity.
+
+_We can use only throw keyword in a function when we want to pass the exception to next function in call stack._
+
+## Creating custom exceptions
+
+```c++
+class AccountLocked : public exception {
+public:
+    const char* what() const noexcept override {
+        return "Your account is locked! Contact the admin...";
+    }
+};
+```
+
+**noexcept** is added to a function when a function doesn't throw any exception and also **noexcept** should be used
+between **const** and **override** otherwise we will get a warning but the code will execute.
+
+# Templates
+
+## Function templates
+
+Using function templates, we can define a function in a flexible way so it can work with any data type. So, our function
+will be generic.
+
+```c++
+template<typename T>
+T larger(T first, T second) {
+    return (first > second) ? first : second;
+}
+```
+
+Function templates can be also used to reduce the size of executable, so if we don't call this function the compiler will
+not create the instance of this function. With overloading, we might be creating many functions but with templates the
+compiler will create function that are used. For example, if we call the above function in above example, then the compiler
+will either not create function or create a overload function if its used for multiple times.
+
+
+## Explicit Type Arguments
+
+There are times, when we have to define the value of **T**.
+```c++
+template<typename T>
+T larger(T first, T second) {
+    return (first > second) ? first : second;
+}
+
+larger(1.2, 1); // The compiler will throw error because first is double and other is int
+
+larger<double>(1.2, 1); // The compiler will create the instance of function with double type.
+```
+
+## Templates with Multiple Parameters
+
+```c++
+template<typename K, typename V>
+void display(K key, V value) {
+    cout << key << "=" << value;
+} 
+```
+
+## Templates in Classes
+
+```c++
+template<typename K, typename V>
+class Pair {
+private:
+    K key;
+    V value;
+public:
+    Pair(K key, V value);
+    K getKey() const;
+    V getValue() const;
+};
+
+template<typename K, typename V>
+K Pair<K, V>::getKey() const {
+    return key;
+}
+
+template<typename K, typename V>
+V Pair<K, V>::getValue() const {
+    return value;
+}
+
+template<typename K, typename V>
+Pair<K, V>::Pair(K key, V value):key(key), value(value) {}
+```
+
+```c++
+#include <cstddef>
+#include <stdexcept>
+
+template<typename T>
+class Array {
+public:
+    explicit Array(size_t size);
+    ~Array();
+    T& operator[](size_t index);
+private:
+    T* values;
+    size_t size;
+};
+
+
+template<typename T>
+Array<T>::Array(size_t size) {
+    values = new T[size];
+    this->size = size;
+}
+
+template<typename T>
+Array<T>::~Array() {
+    delete[] values;
+}
+
+template<typename T>
+T& Array<T>::operator[](size_t index) {
+    if(index >= size) throw std::invalid_argument("index");
+    return values[index];
+}
+
+// Main
+
+Array<int> array{10};
+array[0] = 1;
+
+cout << array[0];
+
+Array<Pair<string, int>> pairs {10};
+pairs[0] = {"a", 1}; // as the type of array is Pair, the compiler will take these values and create a pair object.
+```
+
+
+
+
+
+
 
